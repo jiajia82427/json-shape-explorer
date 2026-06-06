@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Ada Lovelace",
+    "email": "ada@example.com",
+    "roles": ["admin", "analyst"],
+    "profile": {
+      "timezone": "Europe/London",
+      "active": true
+    }
+  },
+  {
+    "id": 2,
+    "name": "Grace Hopper",
+    "email": null,
+    "roles": ["engineer"],
+    "profile": {
+      "timezone": "America/New_York",
+      "active": true
+    }
+  },
+  {
+    "id": 3,
+    "name": "Katherine Johnson",
+    "roles": [],
+    "profile": {
+      "active": false
+    }
+  }
+]
