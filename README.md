@@ -1,5 +1,7 @@
 # JSON Shape Explorer
 
+[简体中文说明](README.zh-CN.md)
+
 Understand unknown JSON datasets in seconds.
 
 JSON Shape Explorer is a tiny zero-dependency CLI that reads one or more JSON samples and summarizes their structure, field types, nested objects, arrays, and optional fields in a readable Markdown report.
