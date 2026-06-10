@@ -6,6 +6,8 @@ JSON Shape Explorer 可以读取一个或多个 JSON 样本，自动总结字段
 
 如果你拿到一批陌生的 API 响应、日志、导出数据、测试 fixture 或配置文件，它可以帮助你快速回答：“这些数据到底长什么样？”
 
+在线 Demo：https://jiajia82427.github.io/json-shape-explorer/
+
 ## 一眼看懂
 
 把杂乱的 JSON 样本转换成清晰的结构报告：

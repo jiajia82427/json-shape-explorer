@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JSON Shape Explorer Demo</title>
+    <meta
+      name="description"
+      content="Paste unknown JSON and get a readable shape report in seconds."
+    />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0d1117;
+        --panel: #111827;
+        --panel-soft: #0b1220;
+        --border: #263241;
+        --text: #f8fafc;
+        --muted: #9ca3af;
+        --accent: #2dd4bf;
+        --accent-strong: #14b8a6;
+        --error: #f87171;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 20% 0%, rgba(45, 212, 191, 0.14), transparent 28rem),
+          radial-gradient(circle at 84% 8%, rgba(59, 130, 246, 0.1), transparent 24rem),
+          var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 40px 0 32px;
+      }
+
+      header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 760px;
+        font-size: clamp(36px, 6vw, 72px);
+        line-height: 0.96;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        max-width: 720px;
+        margin: 18px 0 0;
+        color: #cbd5e1;
+        font-size: 20px;
+        line-height: 1.55;
+      }
+
+      .repo-link {
+        flex: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: rgba(17, 24, 39, 0.76);
+        color: var(--text);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .panel {
+        min-width: 0;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: rgba(17, 24, 39, 0.86);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
+        overflow: hidden;
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 58px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .panel-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      button {
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        background: #172033;
+        color: var(--text);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button.primary {
+        border-color: transparent;
+        background: var(--accent-strong);
+        color: #04111a;
+      }
+
+      textarea,
+      pre {
+        width: 100%;
+        min-height: 480px;
+        margin: 0;
+        padding: 18px;
+        border: 0;
+        outline: 0;
+        background: var(--panel-soft);
+        color: #e5e7eb;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", monospace;
+        font-size: 14px;
+        line-height: 1.65;
+        resize: vertical;
+        white-space: pre-wrap;
+        overflow: auto;
+      }
+
+      textarea {
+        display: block;
+      }
+
+      .error {
+        color: var(--error);
+      }
+
+      footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 22px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      footer a {
+        color: var(--accent);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      @media (max-width: 840px) {
+        header {
+          display: block;
+        }
+
+        .repo-link {
+          margin-top: 20px;
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        textarea,
+        pre {
+          min-height: 340px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <div>
+          <p class="eyebrow">JSON Shape Explorer</p>
+          <h1>Paste unknown JSON. Get a readable shape report.</h1>
+          <p class="subtitle">
+            A tiny browser demo for the open-source CLI. Drop in API responses,
+            logs, exports, or fixtures and quickly see fields, types, arrays,
+            nested objects, and optional values.
+          </p>
+        </div>
+        <a class="repo-link" href="https://github.com/jiajia82427/json-shape-explorer">
+          View on GitHub
+        </a>
+      </header>
+
+      <section class="workspace" aria-label="JSON shape demo">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Input JSON</h2>
+            <div class="actions">
+              <button id="sampleButton" type="button">Load Sample</button>
+              <button id="clearButton" type="button">Clear</button>
+            </div>
+          </div>
+          <textarea id="jsonInput" spellcheck="false" aria-label="Input JSON"></textarea>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Shape Report</h2>
+            <div class="actions">
+              <button id="copyButton" class="primary" type="button">Copy Report</button>
+            </div>
+          </div>
+          <pre id="reportOutput" aria-live="polite"></pre>
+        </div>
+      </section>
+
+      <footer>
+        <span>No data leaves your browser. This demo runs entirely on the page.</span>
+        <span>
+          CLI:
+          <code>node src/cli.js examples/users.json</code>
+        </span>
+      </footer>
+    </main>
+
+    <script>
+      const sample = [
+        {
+          id: 1,
+          name: "Ada Lovelace",
+          email: "ada@example.com",
+          roles: ["admin", "analyst"],
+          profile: {
+            timezone: "Europe/London",
+            active: true
+          }
+        },
+        {
+          id: 2,
+          name: "Grace Hopper",
+          email: null,
+          roles: ["engineer"],
+          profile: {
+            timezone: "America/New_York",
+            active: true
+          }
+        },
+        {
+          id: 3,
+          name: "Katherine Johnson",
+          roles: [],
+          profile: {
+            active: false
+          }
+        }
+      ];
+
+      const input = document.querySelector("#jsonInput");
+      const output = document.querySelector("#reportOutput");
+      const sampleButton = document.querySelector("#sampleButton");
+      const clearButton = document.querySelector("#clearButton");
+      const copyButton = document.querySelector("#copyButton");
+
+      input.value = JSON.stringify(sample, null, 2);
+      updateReport();
+
+      input.addEventListener("input", updateReport);
+      sampleButton.addEventListener("click", () => {
+        input.value = JSON.stringify(sample, null, 2);
+        updateReport();
+      });
+      clearButton.addEventListener("click", () => {
+        input.value = "";
+        updateReport();
+        input.focus();
+      });
+      copyButton.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(output.textContent);
+        copyButton.textContent = "Copied";
+        window.setTimeout(() => {
+          copyButton.textContent = "Copy Report";
+        }, 1200);
+      });
+
+      function updateReport() {
+        try {
+          const text = input.value.trim();
+          if (!text) {
+            output.className = "";
+            output.textContent = "Paste JSON on the left to generate a report.";
+            return;
+          }
+
+          const parsed = JSON.parse(text);
+          const samples = Array.isArray(parsed) ? parsed : [parsed];
+          const report = analyze(samples);
+          output.className = "";
+          output.textContent = renderMarkdown(report);
+        } catch (error) {
+          output.className = "error";
+          output.textContent = `Invalid JSON: ${error.message}`;
+        }
+      }
+
+      function analyze(samples) {
+        const root = createNode();
+        for (const sample of samples) {
+          visit(sample, root);
+        }
+        return { root, sampleCount: samples.length };
+      }
+
+      function createNode() {
+        return {
+          count: 0,
+          examples: [],
+          fields: new Map(),
+          item: undefined,
+          kinds: new Set(),
+          objectCount: 0
+        };
+      }
+
+      function visit(value, node) {
+        const kind = getKind(value);
+        node.count += 1;
+        node.kinds.add(kind);
+        addExample(node, value);
+
+        if (kind === "object") {
+          node.objectCount += 1;
+          for (const [fieldName, fieldValue] of Object.entries(value)) {
+            if (!node.fields.has(fieldName)) {
+              node.fields.set(fieldName, createNode());
+            }
+            visit(fieldValue, node.fields.get(fieldName));
+          }
+        }
+
+        if (kind === "array") {
+          if (!node.item) {
+            node.item = createNode();
+          }
+          for (const item of value) {
+            visit(item, node.item);
+          }
+        }
+      }
+
+      function getKind(value) {
+        if (value === null) return "null";
+        if (Array.isArray(value)) return "array";
+        return typeof value;
+      }
+
+      function addExample(node, value) {
+        if (node.examples.length >= 3) return;
+        if (value === null || typeof value !== "object") {
+          node.examples.push(value);
+          return;
+        }
+        if (Array.isArray(value) && value.length <= 3) {
+          node.examples.push(value);
+        }
+      }
+
+      function renderMarkdown(report) {
+        const sections = [
+          "# JSON Shape Report",
+          "",
+          `Analyzed ${report.sampleCount} ${report.sampleCount === 1 ? "sample" : "samples"}.`,
+          "",
+          "## Root",
+          "",
+          `Type: ${formatType(report.root)}`,
+          ""
+        ];
+
+        appendObjectSection(sections, "Fields", report.root, report.sampleCount);
+        return `${sections.join("\n")}\n`;
+      }
+
+      function appendObjectSection(sections, title, node, parentCount) {
+        if (node.fields.size === 0) return;
+
+        sections.push(`## ${title}`, "");
+        sections.push("| Field | Type | Presence | Example |");
+        sections.push("|---|---|---:|---|");
+
+        const fields = [...node.fields.entries()].sort(([left], [right]) =>
+          left.localeCompare(right)
+        );
+
+        for (const [name, fieldNode] of fields) {
+          sections.push(
+            `| ${escapeTable(name)} | ${escapeTable(formatType(fieldNode))} | ${fieldNode.count}/${parentCount} | ${escapeTable(formatExample(fieldNode.examples[0]))} |`
+          );
+        }
+
+        sections.push("");
+
+        for (const [name, fieldNode] of fields) {
+          appendObjectSection(
+            sections,
+            `Nested: ${name}`,
+            unwrapArrayItem(fieldNode),
+            Math.max(fieldNode.count, 1)
+          );
+        }
+      }
+
+      function unwrapArrayItem(node) {
+        if (node.kinds.has("array") && node.item?.fields.size) {
+          return node.item;
+        }
+        return node;
+      }
+
+      function formatType(node) {
+        return [...node.kinds]
+          .sort()
+          .map((kind) => {
+            if (kind === "array") {
+              return `${node.item ? formatType(node.item) : "unknown"}[]`;
+            }
+            return kind;
+          })
+          .join(" | ");
+      }
+
+      function formatExample(value) {
+        if (value === undefined) return "";
+        return JSON.stringify(value);
+      }
+
+      function escapeTable(value) {
+        return value.replaceAll("|", "\\|");
+      }
+    </script>
+  </body>
+</html>

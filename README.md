@@ -8,6 +8,8 @@ JSON Shape Explorer is a tiny zero-dependency CLI that reads one or more JSON sa
 
 It is useful when you receive unfamiliar API responses, logs, exports, fixtures, or configuration files and want to quickly answer: "What shape does this data actually have?"
 
+Try the browser demo: https://jiajia82427.github.io/json-shape-explorer/
+
 ## At a Glance
 
 Turn messy JSON samples into a readable structure report:
