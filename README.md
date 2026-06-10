@@ -32,6 +32,9 @@ If this helps you understand messy JSON faster, a star would help the project gr
 - Detect primitive, object, array, and mixed types
 - Summarize nested object fields
 - Generate Markdown reports
+- Generate TypeScript interfaces
+- Generate JSON Schema
+- Compare shape changes between two JSON files
 - Run with plain Node.js, no install step required
 
 ## Why
@@ -85,6 +88,9 @@ Type: object
 ```bash
 node src/cli.js examples/users.json
 node src/cli.js samples/*.json --out report.md
+node src/cli.js examples/users.json --format ts
+node src/cli.js examples/users.json --format schema
+node src/cli.js --diff tests/fixtures/old-users.json tests/fixtures/new-users.json
 ```
 
 If installed as a package, the CLI name is:
@@ -92,7 +98,42 @@ If installed as a package, the CLI name is:
 ```bash
 json-shape examples/users.json
 json-shape samples/*.json --out report.md
+json-shape examples/users.json --format ts
+json-shape examples/users.json --format schema
+json-shape --diff old.json new.json
 ```
+
+## Output Formats
+
+### TypeScript
+
+```bash
+node src/cli.js examples/users.json --format ts
+```
+
+```ts
+export interface Root {
+  email?: null | string;
+  id: number;
+  name: string;
+  profile: RootProfile;
+  roles: string[];
+}
+```
+
+### JSON Schema
+
+```bash
+node src/cli.js examples/users.json --format schema
+```
+
+### Shape Diff
+
+```bash
+node src/cli.js --diff old.json new.json
+```
+
+Use this to spot API response changes such as added fields, removed fields, type changes, and presence changes.
 
 ## Development
 
@@ -107,11 +148,8 @@ This is an early open-source project. The current version focuses on a small, re
 
 ## Roadmap
 
-- TypeScript interface output
-- JSON Schema output
 - JSONL support for log-style datasets
 - Field format detection, such as email, URL, UUID, and datetime
-- Shape diff for comparing old and new API responses
 - GitHub Action for detecting API response shape changes in pull requests
 
 ## Contributing

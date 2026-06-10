@@ -23,6 +23,9 @@ Renderer
 - `src/reader.js`：读取和解析 JSON 文件
 - `src/analyzer.js`：分析 JSON 样本结构
 - `src/renderers/markdown.js`：生成 Markdown 报告
+- `src/renderers/typescript.js`：生成 TypeScript interface
+- `src/renderers/json-schema.js`：生成 JSON Schema
+- `src/renderers/diff.js`：生成结构变化对比报告
 - `tests/analyzer.test.js`：基础测试
 
 ## Shape Node
@@ -74,11 +77,15 @@ email: null | string, 2/3
 
 ## 扩展方向
 
-未来可以在不大改核心分析器的情况下加入更多 renderer：
+项目可以在不大改核心分析器的情况下维护多个 renderer。当前已经有：
 
 - TypeScript renderer
 - JSON Schema renderer
-- HTML renderer
+- Markdown renderer
 - Diff renderer
+
+未来还可以继续加入：
+
+- HTML renderer
 
 这样项目可以保持小而清楚，同时逐步变得更有用。

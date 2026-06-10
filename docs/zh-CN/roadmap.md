@@ -14,7 +14,7 @@
 
 ## v0.2：更多输出格式
 
-计划加入：
+已加入：
 
 - TypeScript interface 输出
 - JSON Schema 输出
@@ -32,7 +32,7 @@
 
 ## v0.4：结构变化对比
 
-计划加入：
+已加入：
 
 - 对比两组 JSON 样本
 - 标记新增字段、删除字段和类型变化
@@ -40,8 +40,6 @@
 
 ## 适合贡献的任务
 
-- 添加 TypeScript renderer
-- 添加 JSON Schema renderer
 - 增加更多测试 fixture
 - 改进 README 示例
 - 增加 JSONL reader

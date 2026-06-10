@@ -30,6 +30,9 @@ node src/cli.js examples/users.json
 - 识别 string、number、boolean、null、object、array 等类型
 - 总结嵌套对象字段
 - 输出 Markdown 结构报告
+- 生成 TypeScript interface
+- 生成 JSON Schema
+- 对比两个 JSON 文件的结构变化
 - 使用原生 Node.js 运行，无需安装依赖
 
 ## 为什么需要它
@@ -83,6 +86,9 @@ Type: object
 ```bash
 node src/cli.js examples/users.json
 node src/cli.js samples/*.json --out report.md
+node src/cli.js examples/users.json --format ts
+node src/cli.js examples/users.json --format schema
+node src/cli.js --diff tests/fixtures/old-users.json tests/fixtures/new-users.json
 ```
 
 如果未来作为 npm 包安装，命令会是：
@@ -90,7 +96,42 @@ node src/cli.js samples/*.json --out report.md
 ```bash
 json-shape examples/users.json
 json-shape samples/*.json --out report.md
+json-shape examples/users.json --format ts
+json-shape examples/users.json --format schema
+json-shape --diff old.json new.json
 ```
+
+## 输出格式
+
+### TypeScript
+
+```bash
+node src/cli.js examples/users.json --format ts
+```
+
+```ts
+export interface Root {
+  email?: null | string;
+  id: number;
+  name: string;
+  profile: RootProfile;
+  roles: string[];
+}
+```
+
+### JSON Schema
+
+```bash
+node src/cli.js examples/users.json --format schema
+```
+
+### 结构对比
+
+```bash
+node src/cli.js --diff old.json new.json
+```
+
+可以用来发现 API 响应中的新增字段、删除字段、类型变化和字段出现频率变化。
 
 ## 开发
 
@@ -108,7 +149,7 @@ node --test
 
 ## 当前状态
 
-这个项目还处于早期阶段。当前版本专注于一个小而可靠的 Markdown 报告能力，后续会逐步增加 TypeScript interface、JSON Schema、JSONL、字段格式识别和 shape diff 等功能。
+这个项目还处于早期阶段。当前版本已经支持 Markdown、TypeScript interface、JSON Schema 和结构对比，后续会继续增加 JSONL、字段格式识别和 GitHub Action 等能力。
 
 ## 许可证
 

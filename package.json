@@ -12,9 +12,12 @@
   },
   "keywords": [
     "json",
+    "json-schema",
     "schema",
     "cli",
     "typescript",
+    "types",
+    "diff",
     "data"
   ],
   "author": "",

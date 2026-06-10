@@ -1,3 +1,10 @@
+import {
+  formatExample,
+  formatType,
+  sortedFields,
+  unwrapArrayItem
+} from "../shape-utils.js";
+
 export function renderMarkdown(report) {
   const sections = [
     "# JSON Shape Report",
@@ -24,9 +31,7 @@ function appendObjectSection(sections, title, node, parentCount) {
   sections.push("| Field | Type | Presence | Example |");
   sections.push("|---|---|---:|---|");
 
-  const fields = [...node.fields.entries()].sort(([left], [right]) =>
-    left.localeCompare(right)
-  );
+  const fields = sortedFields(node);
 
   for (const [name, fieldNode] of fields) {
     sections.push(
@@ -44,34 +49,6 @@ function appendObjectSection(sections, title, node, parentCount) {
       Math.max(fieldNode.count, 1)
     );
   }
-}
-
-function unwrapArrayItem(node) {
-  if (node.kinds.has("array") && node.item?.fields.size) {
-    return node.item;
-  }
-
-  return node;
-}
-
-function formatType(node) {
-  const types = [...node.kinds].sort().map((kind) => {
-    if (kind === "array") {
-      return `${node.item ? formatType(node.item) : "unknown"}[]`;
-    }
-
-    return kind;
-  });
-
-  return types.join(" | ");
-}
-
-function formatExample(value) {
-  if (value === undefined) {
-    return "";
-  }
-
-  return JSON.stringify(value);
 }
 
 function escapeTable(value) {

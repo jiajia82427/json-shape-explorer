@@ -35,6 +35,41 @@ node src/cli.js samples/*.json --out report.md
 node src/cli.js samples/*.json -o report.md
 ```
 
+## 输出 TypeScript interface
+
+使用 `--format ts`：
+
+```bash
+node src/cli.js examples/users.json --format ts
+```
+
+这适合在接入陌生 API、整理前端类型或快速生成类型草稿时使用。
+
+## 输出 JSON Schema
+
+使用 `--format schema`：
+
+```bash
+node src/cli.js examples/users.json --format schema
+```
+
+这适合用于接口文档、数据校验或和其他 schema 工具衔接。
+
+## 对比两个 JSON 文件
+
+使用 `--diff`：
+
+```bash
+node src/cli.js --diff old.json new.json
+```
+
+Diff 报告会展示：
+
+- 新增字段
+- 删除字段
+- 类型变化
+- 字段出现频率变化
+
 ## 顶层数组
 
 如果输入 JSON 的顶层是数组，工具会把数组中的每个元素当作一条样本。
@@ -72,9 +107,6 @@ node src/cli.js samples/*.json -o report.md
 当前版本还不支持：
 
 - JSONL 文件
-- 自动生成 TypeScript interface
-- 自动生成 JSON Schema
 - 日期、URL、email、UUID 等格式识别
-- 对比两组 JSON 样本的结构变化
 
 这些能力会在后续版本中逐步加入。
