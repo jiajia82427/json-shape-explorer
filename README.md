@@ -8,6 +8,20 @@ JSON Shape Explorer is a tiny zero-dependency CLI that reads one or more JSON sa
 
 It is useful when you receive unfamiliar API responses, logs, exports, fixtures, or configuration files and want to quickly answer: "What shape does this data actually have?"
 
+## At a Glance
+
+Turn messy JSON samples into a readable structure report:
+
+| Input JSON | Shape Report |
+|---|---|
+| `{ "id": 1, "email": null, "roles": ["admin"] }` | `id: number`<br>`email: null \| string`<br>`roles: string[]` |
+
+```bash
+node src/cli.js examples/users.json
+```
+
+If this helps you understand messy JSON faster, a star would help the project grow.
+
 ## Features
 
 - Analyze one or more JSON files
